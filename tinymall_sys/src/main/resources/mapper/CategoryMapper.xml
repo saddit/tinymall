@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="jmu.shijh.tinymall.mapper.CategoryMapper">
+    <resultMap id="categoryProductMap" type="jmu.shijh.tinymall.domain.vo.CategoryProduct">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_desc" property="categoryDesc"/>
+        <collection property="products" column="category_id"
+                    resultMap="jmu.shijh.tinymall.mapper.ProductMapper.cateProductMap"/>
+    </resultMap>
+    <resultMap id="categoryMap" type="jmu.shijh.tinymall.domain.entity.Category" autoMapping="true">
+        <id column="category_id" property="categoryId"/>
+    </resultMap>
+
+    <resultMap id="categoryPvMap" type="jmu.shijh.tinymall.domain.vo.CategoryPv" autoMapping="true">
+        <id column="category_id" property="categoryId"/>
+        <result column="category_desc" property="categoryDesc"/>
+        <result column="pv" property="pv"/>
+    </resultMap>
+
+    <select id="selectCateProd" resultMap="categoryProductMap"  useCache="true" resultType="list">
+        select cate.category_id,
+               cate.category_desc,
+               child.product_id,
+               child.preview_img,
+               child.product_name,
+               child.sale_price,
+               child.original_price,
+               child.shop_name
+        from category cate
+                 left join (select prod.*, s.shop_name
+                            from product prod,
+                                 shop s
+                            where prod.shop_id = s.shop_id
+                            limit 20) child
+                           on child.category_id = cate.category_id
+    </select>
+
+    <select id="sumShopCatePv" useCache="true" resultType="list" parameterType="long" resultMap="categoryPvMap">
+        select cate.category_desc, ifnull(sum(prod.pv),0) pv
+        from category cate
+                 left join product prod on prod.category_id = cate.category_id
+                 left join shop s on prod.shop_id = s.shop_id
+        where s.shop_id = #{shopId}
+        group by cate.category_id
+    </select>
+</mapper>

@@ -1,0 +1,58 @@
+spring:
+  profiles:
+    include: dev
+  application:
+    name: tinymall
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  rabbitmq:
+    template:
+      receive-timeout: 30000
+      reply-timeout: 30000
+    virtual-host: /tinymall
+    #    publisher-confirm-type: correlated
+    listener:
+      simple:
+        acknowledge-mode: manual
+        concurrency: 2
+        max-concurrency: 3
+  servlet:
+    multipart:
+      max-file-size: 1MB
+      max-request-size: 25MB
+  cache:
+    type: redis
+    redis:
+      key-prefix: tinymall
+
+server:
+  port: 8080
+
+logging:
+  level:
+    jmu.shijh.tinymall: debug
+
+mybatis-plus:
+  configuration:
+    cache-enabled: true
+    jdbc-type-for-null: null
+    map-underscore-to-camel-case: true
+    interceptors:
+  global-config:
+    db-config:
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      logic-delete-field: deleted
+      update-strategy: not_empty
+      insert-strategy: not_empty
+
+
+resource:
+  video-path: file:///D:/code-project/tinymall/file/video/
+  video-pattern: /video/**
+  image-path: file:///D:/code-project/tinymall/file/image/
+  image-pattern: /image/**
+  html-path: file:///D:/code-project/tinymall/file/html/
+  html-pattern: /html/**
+  api-address: http://localhost:8080/

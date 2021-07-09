@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="jmu.shijh.tinymall.mapper.ProductMapper">
+    <resultMap id="cateProductMap" type="jmu.shijh.tinymall.domain.vo.ProductPreVO">
+        <id column="product_id" property="productId"/>
+        <result column="preview_img" property="previewImg" />
+        <result property="shopName" column="shop_name" />
+        <result property="salePrice" column="sale_price" />
+        <result property="originalPrice" column="original_price"/>
+        <result property="productName" column="product_name" />
+    </resultMap>
+
+    <update id="reduceStockBatch">
+        update product set stock = stock - #{reduce} where product_id in
+        <foreach collection="ids" separator="," item="id" open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
+</mapper>

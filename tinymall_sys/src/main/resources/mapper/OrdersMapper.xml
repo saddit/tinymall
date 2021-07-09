@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="jmu.shijh.tinymall.mapper.OrdersMapper">
+
+    <resultMap id="monthIncomeMap" type="jmu.shijh.tinymall.domain.vo.MonthIncomeVO" autoMapping="true"/>
+
+    <select id="sumPerMonthIncome" useCache="true" resultType="list" resultMap="monthIncomeMap">
+        SELECT MONTH(finish_time)  `month`,
+               SUM(discount_price) income
+        FROM orders
+        WHERE shop_id = #{shopId}
+          AND orders_status = 5
+          AND YEAR(finish_time) = #{year}
+          AND MONTH(finish_time) between #{startMonth} and #{endMonth}
+        GROUP BY MONTH(finish_time)
+    </select>
+</mapper>
