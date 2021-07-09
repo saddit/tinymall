@@ -9,6 +9,7 @@
 | vue.js 3.0   |
 | axios        |
 | element plus |
+| echarts      |
 
 ### 后端
 
